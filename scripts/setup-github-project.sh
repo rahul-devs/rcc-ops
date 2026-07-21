@@ -141,20 +141,11 @@ COLUMN_COLORS=(
   "GREEN"
 )
 
-# Build singleSelectOptions JSON array
-options_json="["
-for i in "${!COLUMNS[@]}"; do
-  [[ "$i" -gt 0 ]] && options_json+=","
-  options_json+="{\"name\":\"${COLUMNS[$i]}\",\"color\":\"${COLUMN_COLORS[$i]}\",\"description\":\"\"}"
-done
-options_json+="]"
-
-# Fetch project ID and Status field ID via GraphQL
-read -r PROJECT_ID FIELD_ID <<< "$(gh api graphql -f query='
+# Build options JSON and update Status field via GraphQL input file
+FIELD_ID=$(gh api graphql -f query='
   query($owner: String!, $number: Int!) {
     user(login: $owner) {
       projectV2(number: $number) {
-        id
         fields(first: 20) {
           nodes {
             ... on ProjectV2SingleSelectField {
@@ -167,7 +158,7 @@ read -r PROJECT_ID FIELD_ID <<< "$(gh api graphql -f query='
     }
   }
 ' -f owner="$OWNER" -F number="$PROJECT_NUMBER" \
-  --jq '[.data.user.projectV2.id, (.data.user.projectV2.fields.nodes[] | select(.name == "Status") | .id)] | @tsv')"
+  --jq '.data.user.projectV2.fields.nodes[] | select(.name == "Status") | .id')
 
 if [[ -z "$FIELD_ID" || "$FIELD_ID" == "null" ]]; then
   echo "  ! Status field not found — creating custom Pipeline field..."
@@ -177,19 +168,26 @@ if [[ -z "$FIELD_ID" || "$FIELD_ID" == "null" ]]; then
     --data-type "SINGLE_SELECT" \
     --single-select-options "$(IFS=,; echo "${COLUMNS[*]}")"
 else
-  gh api graphql -f query='
-    mutation($input: UpdateProjectV2FieldInput!) {
-      updateProjectV2Field(input: $input) {
-        projectV2Field {
-          ... on ProjectV2SingleSelectField {
-            name
-            options { name }
-          }
-        }
-      }
-    }
-  ' -f input="{\"fieldId\":\"${FIELD_ID}\",\"singleSelectOptions\":${options_json}}" \
-    --silent
+  options_json="["
+  for i in "${!COLUMNS[@]}"; do
+    [[ "$i" -gt 0 ]] && options_json+=","
+    options_json+="{\"name\":\"${COLUMNS[$i]}\",\"color\":\"${COLUMN_COLORS[$i]}\",\"description\":\"\"}"
+  done
+  options_json+="]"
+
+  tmpfile=$(mktemp)
+  cat > "$tmpfile" <<GRAPHQL_EOF
+{
+  "query": "mutation(\$fieldId: ID!, \$options: [ProjectV2SingleSelectFieldOptionInput!]!) { updateProjectV2Field(input: {fieldId: \$fieldId, singleSelectOptions: \$options}) { projectV2Field { ... on ProjectV2SingleSelectField { name options { name } } } } }",
+  "variables": {
+    "fieldId": "${FIELD_ID}",
+    "options": ${options_json}
+  }
+}
+GRAPHQL_EOF
+
+  gh api graphql --input "$tmpfile" --silent
+  rm -f "$tmpfile"
   echo "  ✓ Updated Status columns"
 fi
 
