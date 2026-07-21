@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document defines the RCC-OPS GitHub Project board. RCC-OPS is an **RFC-driven project** — Cursor never starts work unless an RFC is Approved. This gate prevents architecture drift.
+This document defines the RCC-OPS GitHub Project board (Projects v2). RCC-OPS is an **RFC-driven project** — implementation work does not begin until an RFC is Approved.
 
 ## Project Board
 
@@ -11,71 +11,48 @@ This document defines the RCC-OPS GitHub Project board. RCC-OPS is an **RFC-driv
 | **Title** | RCC-OPS |
 | **Owner** | [rahul-devs](https://github.com/rahul-devs) |
 | **Repository** | [rahul-devs/rcc-ops](https://github.com/rahul-devs/rcc-ops) |
+| **URL** | [Project #1](https://github.com/users/rahul-devs/projects/1) |
 
-## Columns (RFC-Driven Pipeline)
+## Columns (Status)
 
-Issues and pull requests flow through these stages. **No card may reach 💻 Ready For Cursor without passing ✅ Approved.**
-
-| Column | Purpose | Actor |
-|--------|---------|-------|
-| 📥 Inbox | New items awaiting triage | Human |
-| 🔬 Discovery | Research, requirements, problem exploration | Human |
-| 📝 RFC Draft | RFC being written or revised | Human |
-| 👨‍💼 Review (Claude) | RFC under architectural review | Claude |
-| ✅ Approved | RFC accepted — implementation may proceed | Claude |
-| 💻 Ready For Cursor | Approved and queued for implementation | Cursor |
-| 🚧 In Progress | Active development | Cursor |
-| 👀 Code Review | Code review in progress | Human / Claude |
-| 🧪 RCC Testing | RCC pilot validation and integration testing | Human |
-| ✅ Done | Completed and verified | — |
+| Column | Purpose |
+|--------|---------|
+| Inbox | New items awaiting triage |
+| Discovery | Research, requirements, problem exploration |
+| RFC Draft | RFC or ADR being written or revised |
+| Review | Design under architectural review |
+| Approved | Accepted — implementation may proceed |
+| Ready for Cursor | Approved and queued for implementation |
+| In Progress | Active development |
+| Code Review | Code review in progress |
+| RCC Testing | RCC pilot validation and integration testing |
+| Done | Completed and verified |
 
 ### The Gate
 
 ```
-📝 RFC Draft → 👨‍💼 Review (Claude) → ✅ Approved → 💻 Ready For Cursor → 🚧 In Progress
+RFC Draft → Review → Approved → Ready for Cursor → In Progress
 ```
 
-Work that skips RFC approval must not enter implementation columns. This is the primary mechanism for preventing architecture drift.
+Work that skips approval must not enter implementation columns.
 
 ## Custom Fields
 
 ### Priority
 
-| Value | Use For |
-|-------|---------|
-| Critical | Blocks delivery or production |
-| High | Important, time-sensitive |
-| Medium | Normal priority |
-| Low | Nice to have, deferrable |
+Critical · High · Medium · Low
 
 ### Domain
 
-| Value | Use For |
-|-------|---------|
-| Community | Community features |
-| Match | Match scheduling and results |
-| Registration | Registration workflows |
-| Finance | Financial operations |
-| Discipline | Discipline management |
-| Messaging | Messaging and notifications |
-| AI | AI-powered features |
-| Platform | Core platform and infrastructure |
+Community · Match · Registration · Finance · Discipline · Messaging · AI · Platform
 
 ### Type
 
-| Value | Use For |
-|-------|---------|
-| RFC | Request for Comments — design proposal |
-| ADR | Architecture Decision Record |
-| Feature | New functionality |
-| Bug | Defect fix |
-| Task | Operational or maintenance work |
-| Spike | Time-boxed investigation |
-| Research | Open-ended exploration |
+RFC · ADR · Feature · Bug · Research · Task
 
 ### Milestone
 
-Uses GitHub's **built-in Milestone field**, linked to repository milestones. A custom field named "Milestone" is reserved by GitHub Projects.
+Uses GitHub's **built-in Milestone field**, linked to repository milestones:
 
 | Value | Scope |
 |-------|-------|
@@ -86,71 +63,36 @@ Uses GitHub's **built-in Milestone field**, linked to repository milestones. A c
 | M4 AI | AI features and automation |
 | M5 RCC Pilot | Pilot deployment and validation |
 
-### Estimated Complexity
+### Complexity
 
-| Value | Meaning |
-|-------|---------|
-| XS | Trivial, < 1 hour |
-| S | Small, < 1 day |
-| M | Medium, 1–3 days |
-| L | Large, 1 week |
-| XL | Extra large, multi-week |
+XS · S · M · L · XL
 
 ### AI Owner
 
-| Value | Use For |
-|-------|---------|
-| ChatGPT | ChatGPT-led work |
-| Claude | Claude-led review or design |
-| Cursor | Cursor-led implementation |
-| Ollama | Local model work |
-| Mixed | Multiple AI tools involved |
+ChatGPT · Claude · Cursor · Ollama · Mixed
 
-## Labels
+## Seed Issues (M0 Discovery)
 
-| Label | Use For |
-|-------|---------|
-| `architecture` | System design and structural decisions |
-| `ddd` | Domain-driven design |
-| `event-driven` | Event-driven architecture |
-| `documentation` | Documentation updates |
-| `backend` | Server-side work |
-| `api` | API endpoints and contracts |
-| `database` | Database schema and migrations |
-| `laravel` | Laravel framework |
-| `whatsapp` | WhatsApp integration |
-| `llm` | Large language model features |
-| `finance` | Financial operations |
-| `discipline` | Discipline management |
-| `registration` | Registration workflows |
-| `community` | Community features |
-| `match` | Match scheduling and results |
-| `waiting-list` | Waiting list management |
-| `penalty` | Penalty rules |
-| `payment` | Payment processing |
-| `breaking-change` | Breaking API or schema change |
-| `needs-review` | Awaiting review |
-| `blocked` | Blocked by dependency or decision |
+| Issue | Type |
+|-------|------|
+| RFC-0000 Project Principles | RFC |
+| RFC-0001 Ubiquitous Language | RFC |
+| RFC-0002 State Machines | RFC |
+| RFC-0003 Bounded Contexts | RFC |
+| ADR-0001 Modular Monolith | ADR |
+| ADR-0002 Event-Driven Architecture | ADR |
+| ADR-0003 AI Never Owns Business Logic | ADR |
+| ADR-0004 WhatsApp Is an Adapter | ADR |
+
+All seed issues are assigned to **M0 Discovery** and placed in **Inbox**.
 
 ## Setup
 
 ```bash
-# 1. Authenticate (one-time)
 gh auth login
 gh auth refresh -s project,repo
-
-# 2. Run the setup script
-./scripts/setup-github-project.sh
+./scripts/configure-github-project.sh
 ```
-
-## Usage Guidelines
-
-1. **New work** enters via 📥 Inbox.
-2. **Non-trivial changes** require an RFC — set Type to `RFC` and move through the RFC columns.
-3. **Claude reviews** all RFCs at 👨‍💼 Review (Claude) before approval.
-4. **Only Approved RFCs** may move to 💻 Ready For Cursor.
-5. **Set custom fields** on every card: Priority, Domain, Type, Milestone, Complexity, AI Owner.
-6. **Apply labels** for filtering and automation.
 
 ## Related Documents
 
