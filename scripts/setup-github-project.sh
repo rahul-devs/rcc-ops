@@ -234,9 +234,12 @@ echo "==> Configuring custom fields..."
 ensure_field "Priority" "Critical" "High" "Medium" "Low"
 ensure_field "Domain" "Community" "Match" "Registration" "Finance" "Discipline" "Messaging" "AI" "Platform"
 ensure_field "Type" "RFC" "ADR" "Feature" "Bug" "Task" "Spike" "Research"
-ensure_field "Milestone" "M0 Discovery" "M1 Domain" "M2 Core" "M3 WhatsApp" "M4 AI" "M5 RCC Pilot"
 ensure_field "Estimated Complexity" "XS" "S" "M" "L" "XL"
 ensure_field "AI Owner" "ChatGPT" "Claude" "Cursor" "Ollama" "Mixed"
+
+# Milestone uses GitHub's built-in field (linked to repo milestones M0–M5).
+# A custom field named "Milestone" is reserved by GitHub Projects.
+echo "  ~ Milestone: using built-in field (repo milestones M0–M5)"
 
 # ---------------------------------------------------------------------------
 # Done
