@@ -75,6 +75,8 @@ Work that skips RFC approval must not enter implementation columns. This is the 
 
 ### Milestone
 
+Uses GitHub's **built-in Milestone field**, linked to repository milestones. A custom field named "Milestone" is reserved by GitHub Projects.
+
 | Value | Scope |
 |-------|-------|
 | M0 Discovery | Research and problem definition |
