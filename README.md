@@ -18,6 +18,7 @@ RCC-OPS is a production-quality Laravel application. This repository currently c
 | [docs/architecture.md](docs/architecture.md) | High-level system architecture |
 | [architecture/overview.md](architecture/overview.md) | Architecture deep-dive |
 | [rfcs/RFC-0001-rulebook.md](rfcs/RFC-0001-rulebook.md) | Rulebook RFC |
+| [docs/github-project.md](docs/github-project.md) | GitHub Project board setup |
 
 ## Repository Structure
 
